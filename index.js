@@ -1,11 +1,13 @@
-const fs = require('fs');
 const qrCode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const { MessageMedia } = require('whatsapp-web.js');
 
 
 const client = new Client({
-    authStrategy: new LocalAuth({clientId: 'rt-id'})
+    authStrategy: new LocalAuth({clientId: 'rt-id'}),
+    puppeteer: {
+        executablePath: process.env.CHROMIUM_PATH,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
 
 client.on('qr', (qr) => {
@@ -18,13 +20,10 @@ client.on('ready', () => {
 
 client.initialize().then();
 
-const price = MessageMedia.fromFilePath('./img/rt-prices.jpeg');
 
 client.on('message', (message) => {
     // console.log(message);
     if (message.body === 'Salam') {
-
-        message.reply(price).then();
     }
 });
 
